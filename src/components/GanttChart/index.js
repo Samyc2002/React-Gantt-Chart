@@ -2,12 +2,25 @@ import React, { useEffect, useRef, useState } from "react";
 import { addDays, differenceInDays, format, isWeekend } from "date-fns";
 import "./style.css";
 
+/**
+ * GanttChart component is a simple Gantt chart implementation using React.
+ * It receives an array of tasks and displays them in a scrollable Gantt chart.
+ *
+ * @param {Array} tasks - Array of task objects with the following properties:
+ *  - id: Unique identifier for the task.
+ *  - name: Task name (displayed on the task bar).
+ *  - startDate: Task start date (format: YYYY-MM-DD).
+ *  - duration: Task duration in days.
+ *  - color: Task bar color.
+ */
 const GanttChart = ({ tasks }) => {
+  // Calculate the difference in days between the given date and the start date of the first task.
   const getDateOffset = (date) => {
     const startDate = tasks[0].startDate;
     return differenceInDays(new Date(date), new Date(startDate));
   };
 
+  // Format the date as "MMM\ndd".
   const formatDate = (date) => {
     const d = new Date(date);
     const month = d.toLocaleString("default", { month: "short" });
@@ -15,8 +28,8 @@ const GanttChart = ({ tasks }) => {
     return `${month}\n${day}`;
   };
 
+  // Calculate the total number of days to be displayed on the chart.
   const [days, setDays] = useState(0);
-
   useEffect(() => {
     let endDate = days;
     tasks.forEach((task) => {
@@ -28,12 +41,14 @@ const GanttChart = ({ tasks }) => {
     setDays(endDate);
   }, [tasks]);
 
+  // Keep references to the header and body of the Gantt chart for handling scroll events.
   const headerRef = useRef(null);
   const bodyRef = useRef(null);
 
   const dayWidth = 50;
   const borderWidth = 1;
 
+  // Synchronize the scroll position of the header and the body of the Gantt chart.
   const handleScroll = (e) => {
     const { scrollLeft } = e.target;
     headerRef.current.scrollLeft = scrollLeft;

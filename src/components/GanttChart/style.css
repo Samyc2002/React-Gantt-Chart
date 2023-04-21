@@ -1,3 +1,4 @@
+/* Set styles for the Gantt chart container */
 .gantt-chart {
   display: flex;
   flex-direction: column;
@@ -7,33 +8,31 @@
   border-radius: 4px;
 }
 
+/* Set styles for the header of the Gantt chart */
 .gantt-chart-header {
   position: sticky;
   display: flex;
   background-color: #f5f5f5;
-  /* overflow: hidden; */
 }
 
+/* Set styles for a bottom border with 1px width */
 .border-bottom-1 {
   border-bottom: 1px solid #e0e0e0;
 }
 
-.gantt-chart-header {
-  display: flex;
-}
-
+/* Set styles for the days container in the header of the Gantt chart */
 .gantt-chart-days {
   display: flex;
 }
 
+/* Set styles for the body of the Gantt chart */
 .gantt-chart-body {
   border-top: 1px solid #e0e0e0;
   border-radius: 4px;
 }
 
+/* Set styles for each day in the header of the Gantt chart */
 .gantt-chart-day {
-  /* display: inline-block; */
-  /* width: 40px; /* Set fixed width for each day */
   display: flex;
   flex-direction: column;
   height: 40px;
@@ -45,27 +44,30 @@
   white-space: pre-wrap;
 }
 
+/* Set styles for each row in the body of the Gantt chart */
 .gantt-chart-row {
   display: flex;
   align-items: center;
 }
 
+/* Set styles for the last row in the body of the Gantt chart */
 .gantt-chart-row:last-child {
   border-bottom: none;
 }
 
+/* Set styles for each task row in the body of the Gantt chart */
 .gantt-chart-task-row {
   flex: 1;
   display: flex;
   height: 40px;
   position: relative;
-  /* border-top: 1px solid #e0e0e0; */
   border-left: 1px solid #e0e0e0;
   border-right: 1px solid #e0e0e0;
   background-image: linear-gradient(to right, #e0e0e0 1px, transparent 1px);
   background-size: 52px 100%;
 }
 
+/* Set styles for each task in the body of the Gantt chart */
 .gantt-chart-task {
   background-color: #3f51b5;
   color: white;
@@ -81,6 +83,7 @@
   font-weight: bold;
 }
 
+/* Set styles for each date column in the body of the Gantt chart */
 .gantt-chart-date-column {
   flex-grow: 1;
 }
