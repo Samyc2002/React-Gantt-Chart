@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { addDays, differenceInDays, format, isWeekend } from "date-fns";
+import { addDays, differenceInDays } from "date-fns";
 import "./style.css";
 
 /**
@@ -23,7 +23,7 @@ const GanttChart = ({ tasks }) => {
   // Format the date as "MMM\ndd".
   const formatDate = (date) => {
     const d = new Date(date);
-    const month = d.toLocaleString("default", { month: "short" });
+    const month = d.toLocaleString("default", { month: "short" }).toUpperCase();
     const day = d.getDate();
     return `${month}\n${day}`;
   };
