@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { addDays, differenceInDays } from "date-fns";
 
-import Tabs from "../Tabs";
 import styles from "./style.module.css";
 
 /**
@@ -15,25 +14,96 @@ import styles from "./style.module.css";
  *  - duration: Task duration in days.
  *  - color: Task bar color.
  */
-const GanttChart = ({ displayText, tasks }) => {
+const GanttChart = ({ displayText, data, tasks, height, width: containerWidth }) => {
   // Calculate the total number of days to be displayed on the chart.
+  const width = containerWidth * 0.6;
+  const borderWidth = 1;
+
   const [days, setDays] = useState(0);
   const [tabValue, setTabValue] = useState(0);
-  const tabRefs = useRef([]);
+  const [dayWidth, setDayWidth] = useState(width / 14 - 2);
+
+  // Keep references to the header and body of the Gantt chart for handling scroll events.
+  const headerRef = useRef(null);
+  const bodyRef = useRef(null);
 
   useEffect(() => {
-    let endDate = days;
-    tasks.forEach((task) => {
-      endDate = Math.max(
-        endDate,
-        getDateOffset(task.startDate) + task.duration,
-      );
-    });
-    setDays(endDate);
-  }, [tasks]);
+    setDays(getDaysInThisQuarter());
+
+    bodyRef.current.scrollLeft =
+      Math.abs(differenceInDays(startDate, new Date(addDays(new Date(), -6)))) *
+      (dayWidth + 2 * borderWidth);
+  }, []);
+
+  const getCurrQuarter = () => {
+    return Math.ceil((new Date().getMonth() + 1) / 3);
+  };
+
+  const getQuarterMonths = () => {
+    switch (getCurrQuarter()) {
+      case 1:
+        return ["Jan", "Feb", "Mar"];
+      case 2:
+        return ["Apr", "May", "Jun"];
+      case 3:
+        return ["Jul", "Aug", "Sep"];
+      case 4:
+        return ["Oct", "Nov", "Dec"];
+
+      default:
+        break;
+    }
+  };
+
+  const getDaysInThisQuarter = () => {
+    const isLeapYear = () => {
+      return new Date(new Date().getFullYear(), 1, 29).getDate() === 29;
+    };
+
+    const currQuarter = getCurrQuarter();
+    switch (currQuarter) {
+      case 1:
+        return 90 + isLeapYear();
+      case 2:
+        return 91;
+      default:
+        return 92;
+    }
+  };
 
   const handleTabChange = (newValue) => {
+    const getDaysInThisMonth = () => {
+      return new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+    };
+
     setTabValue(newValue);
+    switch (newValue) {
+      case 0:
+        setDayWidth(width / 14 - 2);
+        setDays(getDaysInThisQuarter());
+        bodyRef.current.scrollLeft =
+          Math.abs(differenceInDays(startDate, new Date(addDays(new Date(), -6)))) *
+          (width / 14 - 2 + 2 * borderWidth);
+        break;
+      case 1:
+        var numDays = getDaysInThisMonth() / 7;
+        setDayWidth(width / numDays - 2);
+        setDays(getDaysInThisQuarter() / 7);
+        var split = numDays % 2 === 0 ? numDays / 2 - 1 : Math.floor(numDays / 2);
+        bodyRef.current.scrollLeft =
+          Math.floor(
+            Math.abs(differenceInDays(startDate, new Date(addDays(new Date(), -split * 7)))) / 7
+          ) *
+          (width / numDays - 2 + 2 * borderWidth);
+        break;
+      case 2:
+        numDays = getDaysInThisQuarter() / 30;
+        setDayWidth(width / numDays - 2);
+        setDays(getDaysInThisQuarter() / 30);
+        split = numDays % 2 === 0 ? numDays / 2 - 1 : Math.floor(numDays / 2);
+        bodyRef.current.scrollLeft = 0;
+        break;
+    }
   };
 
   // Calculate the difference in days between the given date and the start date of the first task.
@@ -93,15 +163,14 @@ const GanttChart = ({ displayText, tasks }) => {
     else {
       switch (displayText) {
         case "diff":
-          var diffTime = differenceInDays(
-            new Date(task.startDate),
-            new Date(),
-          );
+          var diffTime = differenceInDays(new Date(task.startDate), new Date());
           var prefix = diffTime >= 0 ? "" : "Started";
           var suffix = diffTime >= 0 ? "to go" : "ago";
           return formatText(
-            `${prefix} ${diffTime} day${diffTime === 1 ? "" : "s"} ${suffix}`,
-            width,
+            `${prefix} ${diffTime >= 0 ? diffTime : -diffTime} day${
+              diffTime === 1 ? "" : "s"
+            } ${suffix}`,
+            width
           );
         case "name":
           return task.name;
@@ -110,13 +179,6 @@ const GanttChart = ({ displayText, tasks }) => {
       }
     }
   };
-
-  // Keep references to the header and body of the Gantt chart for handling scroll events.
-  const headerRef = useRef(null);
-  const bodyRef = useRef(null);
-
-  const dayWidth = 50;
-  const borderWidth = 1;
 
   // Synchronize the scroll position of the header and the body of the Gantt chart.
   const handleScroll = (e) => {
@@ -128,84 +190,133 @@ const GanttChart = ({ displayText, tasks }) => {
     {
       label: "2 Weeks",
       foreground: "#512DA8",
-      background: "#D1C4E9",
+      background: "#D1C4E9"
     },
     {
       label: "1 Month",
       foreground: "#5D4037",
-      background: "#D7CCC8",
+      background: "#D7CCC8"
     },
     {
       label: "1 Quarter",
       foreground: "#00796B",
-      background: "#B2DFDB",
-    },
+      background: "#B2DFDB"
+    }
   ];
 
+  const startDate = new Date(
+    new Date().getFullYear(),
+    Math.floor(new Date().getMonth() / 3) * 3,
+    1
+  );
+  const startOffset = getDateOffset(startDate);
+
   return (
-    <>
-      <Tabs
-        tabsArray={tabsArray}
-        tabValue={tabValue}
-        tabRefs={tabRefs}
-        handleTabChange={handleTabChange}
-      />
-      <div className={styles.parent}>
-        <div className={styles.ganttChart}>
+    <div className={styles.root} style={{ width: `${containerWidth}px` }}>
+      <div className={styles.projects}>
+        <h1>Projects</h1>
+        {data?.map((project, id) => {
+          return (
+            <div key={id}>{project?.name}</div>
+          )
+        })}
+      </div>
+      <div className={styles.chartContainer}>
+        <div
+          className={styles.ganttChartHeader}
+          ref={headerRef}
+          style={{ backgroundColor: tabsArray[tabValue].foreground }}
+        >
           <div
-            className={styles.ganttChartHeader}
-            ref={headerRef}
-            style={{ backgroundColor: tabsArray[tabValue].foreground }}
+            className={styles.ganttChartDays}
+            style={{ width: `${days * (dayWidth + 2) + 1}px` }}
+          >
+            {Array.from({ length: days }, (_, i) => {
+              const date = addDays(new Date(startDate), i);
+              return (
+                <div
+                  key={i}
+                  className={styles.ganttChartDay}
+                  style={{ width: `${dayWidth + 2}px` }}
+                >
+                  <h4 align="center">
+                    {tabValue === 0 && formatDate(date)}
+                    {tabValue === 1 && `Week\n${i + 1}`.toUpperCase()}
+                    {tabValue === 2 && getQuarterMonths()[i].toUpperCase()}
+                  </h4>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <br />
+        <div className={styles.parent} ref={bodyRef} onScroll={handleScroll}>
+          <div
+            className={styles.ganttChart}
+            ref={bodyRef}
+            style={{ height: `${height}px`, width: `${width + 2}px` }}
           >
             <div
-              className={styles.ganttChartDays}
-              style={{ width: `${days * (dayWidth + 2) + 1}px` }}
+              className={styles.ganttChartBody}
+              style={{
+                width: days * (dayWidth + 2) + 2
+              }}
             >
-              {Array.from({ length: days }, (_, i) => {
-                const date = addDays(new Date(tasks[0].startDate), i);
-                return (
-                  <div
-                    key={i}
-                    className={styles.ganttChartDay}
-                    style={{ width: `${dayWidth + 2}px` }}
-                  >
-                    {formatDate(date)}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <div
-            className={styles.ganttChartBody}
-            style={{
-              width: days * (dayWidth + 2) + 2,
-            }}
-            ref={bodyRef}
-            onScroll={handleScroll}
-          >
-            {tasks.map((task) => (
-              <div key={task.id} className={styles.ganttChartRow}>
-                <div className={styles.ganttChartTaskRow}>
-                  <div
-                    className={styles.ganttChartTask}
-                    style={{
-                      marginLeft: `${
-                        (getDateOffset(task.startDate) * dayWidth) +
-                        (getDateOffset(task.startDate) * borderWidth * 2)
-                      }px`,
-                      width: `${task.duration * (dayWidth + 2)}px`,
-                      backgroundColor: task.color,
-                    }}
-                  >
-                    {getDisplayText(task, task.duration * dayWidth)}
+              {tasks.map((task) => (
+                <div
+                  key={task.id}
+                  className={styles.ganttChartRow}
+                  style={{ backgroundSize: `${dayWidth + 2}px 100%` }}
+                >
+                  <div className={styles.ganttChartTaskRow}>
+                    <div
+                      className={styles.ganttChartTask}
+                      style={{
+                        marginLeft: `${
+                          startOffset +
+                          getDateOffset(task.startDate) *
+                            (tabValue === 1
+                              ? dayWidth / 7
+                              : tabValue === 2
+                              ? dayWidth / 30
+                              : dayWidth) +
+                          getDateOffset(task.startDate) * borderWidth * 2
+                        }px`,
+                        width: `${
+                          task.duration *
+                          (tabValue === 1
+                            ? dayWidth / 7 + 2
+                            : tabValue === 2
+                            ? dayWidth / 30 + 2
+                            : dayWidth + 2)
+                        }px`,
+                        backgroundColor: task.color
+                      }}
+                    >
+                      {getDisplayText(
+                        task,
+                        task.duration *
+                          (tabValue === 1
+                            ? dayWidth / 7 + 2
+                            : tabValue === 2
+                            ? dayWidth / 30 + 2
+                            : dayWidth + 2)
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </>
+      <div
+        className={styles.nextTab}
+        onClick={() => handleTabChange(tabValue === 2 ? 0 : tabValue + 1)}
+      >
+        Next
+      </div>
+    </div>
   );
 };
 
