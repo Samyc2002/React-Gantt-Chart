@@ -1,74 +1,87 @@
+.parent {
+  display: grid;
+  place-items: center;
+}
+
 /* Set styles for the Gantt chart container */
-.gantt-chart {
+.ganttChart {
   display: flex;
   flex-direction: column;
-  font-family: "Arial", sans-serif;
-  width: fit-content;
+  font-family: "Inter", sans-serif;
+  width: 1500px;
+  height: 800px;
   border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  border-radius: 10px;
+  position: relative;
+  overflow-x: auto;
+  background-size: 52px 100%;
 }
 
 /* Set styles for the header of the Gantt chart */
-.gantt-chart-header {
+.ganttChartHeader {
   position: sticky;
   display: flex;
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: fit-content;
 }
 
 /* Set styles for a bottom border with 1px width */
-.border-bottom-1 {
+.borderBottom1 {
   border-bottom: 1px solid #e0e0e0;
 }
 
 /* Set styles for the days container in the header of the Gantt chart */
-.gantt-chart-days {
+.ganttChartDays {
   display: flex;
 }
 
 /* Set styles for the body of the Gantt chart */
-.gantt-chart-body {
+.ganttChartBody {
+  /* width: fit-content; */
   border-top: 1px solid #e0e0e0;
-  border-radius: 4px;
+  border-radius: 10px;
 }
 
 /* Set styles for each day in the header of the Gantt chart */
-.gantt-chart-day {
+.ganttChartDay {
   display: flex;
   flex-direction: column;
   height: 40px;
   text-align: center;
   line-height: 20px;
   font-size: 12px;
-  color: #777;
+  color: white;
   box-sizing: border-box;
   white-space: pre-wrap;
 }
 
 /* Set styles for each row in the body of the Gantt chart */
-.gantt-chart-row {
+.ganttChartRow {
   display: flex;
   align-items: center;
+  background-image: linear-gradient(to right, #e0e0e0 1px, transparent 1px);
+  background-size: 52px 100%;
 }
 
 /* Set styles for the last row in the body of the Gantt chart */
-.gantt-chart-row:last-child {
+.ganttChartRow:last-child {
   border-bottom: none;
 }
 
 /* Set styles for each task row in the body of the Gantt chart */
-.gantt-chart-task-row {
+.ganttChartTaskRow {
   flex: 1;
   display: flex;
   height: 40px;
   position: relative;
   border-left: 1px solid #e0e0e0;
   border-right: 1px solid #e0e0e0;
-  background-image: linear-gradient(to right, #e0e0e0 1px, transparent 1px);
-  background-size: 52px 100%;
 }
 
 /* Set styles for each task in the body of the Gantt chart */
-.gantt-chart-task {
+.ganttChartTask {
   background-color: #3f51b5;
   color: white;
   display: flex;
@@ -77,13 +90,26 @@
   border-radius: 3px;
   height: 60%;
   margin: auto 0;
-  padding: 0 4px;
+  /* padding: 0 2px; */
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
   font-size: 14px;
   font-weight: bold;
 }
 
 /* Set styles for each date column in the body of the Gantt chart */
-.gantt-chart-date-column {
+.ganttChartDateColumn {
   flex-grow: 1;
+}
+
+/* For Chrome, Edge, and Safari */
+::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar-track {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  display: none;
 }
