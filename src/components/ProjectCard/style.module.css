@@ -1,0 +1,45 @@
+/* Styles for the project card container */
+.project {
+  padding: 14px;
+  margin: 10px;
+  border-radius: 10px;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+/* Styles for the project title */
+.title {
+  margin: 5px 0;
+}
+
+/* Styles for the milestone container */
+.milestone {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 90%;
+  margin: 10px;
+}
+
+/* Styles for the milestone title */
+.milestoneTitle {
+  margin: 0;
+  font-weight: normal;
+}
+
+/* Styles for the progress background */
+.progressBackground {
+  width: 100%;
+  height: 20px;
+  border-radius: 5px;
+}
+
+/* Styles for the progress bar */
+.progressBar {
+  border-radius: 5px;
+  height: 20px;
+}

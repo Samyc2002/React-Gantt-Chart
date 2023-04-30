@@ -1,7 +1,30 @@
+/* Style for the main App container */
 .App {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  height: 100vh; /* Take the full height of the screen */
+  text-align: center; /* Center-aligns text within the container */
+  display: flex; /* Sets the container's display type to flex */
+  flex-direction: column; /* Aligns the container's items in a column */
+  align-items: center; /* Aligns the container's items horizontally to the center */
+  justify-content: center; /* Aligns the container's items vertically to the center */
+}
+
+/* Style for the header container */
+.header {
+  display: flex; /* Sets the header's display type to flex */
+  align-items: center; /* Aligns the header's items horizontally to the center */
+  justify-content: space-between; /* Distributes the header's items evenly with equal space between them */
+  width: 400px; /* Sets the width of the header container */
+}
+
+/* Style for the theme toggle button */
+.toggleBtn {
+  padding: 8px 14px; /* Sets the padding around the button's text */
+  border: none; /* Removes the default button border */
+  border-radius: 5px; /* Gives the button rounded corners with a 5px radius */
+  cursor: pointer; /* Changes the cursor to a pointer when hovering over the button */
+}
+
+/* Style for the button text */
+.btnText {
+  margin: 0; /* Removes the default margin around the button text */
 }
