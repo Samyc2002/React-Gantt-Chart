@@ -1,70 +1,131 @@
-# Getting Started with Create React App
+# Gantt Chart React Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project demonstrates how to create a simple Gantt chart from scratch. The Gantt chart is a popular project management tool that visually represents tasks and their timeframes in a horizontal bar chart format.
 
-## Available Scripts
+## Getting Started
 
-In the project directory, you can run:
+Follow these instructions to set up the project and run it on your local machine.
 
-### `npm start`
+### Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js version 12.0.0 or higher
+- NPM version 6.0.0 or higher
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Installation
 
-### `npm test`
+1. Clone the repository:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+git clone https://github.com/yourusername/gantt-chart-react.git
+```
 
-### `npm run build`
+2. Change to the project directory:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+cd gantt-chart-react
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Install the dependencies:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm install
+```
 
-### `npm run eject`
+4. Start the development server:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The application should now be running on `http://localhost:3000/`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Usage
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The `GanttChartComponent` in `src/components/GanttChartComponent/` renders the Gantt chart. You can modify the data array to include your own projects and milestones. Each data object should have the following format:
 
-## Learn More
+```js
+{
+    name: string,
+    projectColor: string,
+    milestones: [
+        {
+            name: string,
+            startDate: string,
+            duration: number,
+            primaryColor: string,
+            secondaryColor: string,
+            tertiaryColor: string,
+            progress: number
+        }
+    ]
+}
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Example:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```js
+[
+  {
+    name: "Project 1",
+    projectColor: "#DB443799",
+    milestones: [
+      {
+        id: 14,
+        name: "Milestone 14",
+        startDate: "2023-05-20",
+        duration: 7,
+        primaryColor: "#DB4437",
+        secondaryColor: "#DB443780",
+        tertiaryColor: "#DB443733",
+        progress: 35
+      }
+    ]
+  },
+  {
+    name: "Project 2",
+    projectColor: "#F4B40099",
+    milestones: [
+      {
+        id: 5,
+        name: "Milestone 5",
+        startDate: "2023-04-28",
+        duration: 4,
+        primaryColor: "#4285F4",
+        secondaryColor: "#4285F480",
+        tertiaryColor: "#4285F433",
+        progress: 70
+      },
+      {
+        id: 6,
+        name: "Milestone 6",
+        startDate: "2023-04-30",
+        duration: 7,
+        primaryColor: "#DB4437",
+        secondaryColor: "#DB443780",
+        tertiaryColor: "#DB443733",
+        progress: 11
+      }
+    ]
+  }
+];
+```
 
-### Code Splitting
+To create the Gantt chart, simply import the `GanttChart` component from `src/components/GanttChart`:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```js
+import GanttChart from "src/components/GanttChart";
+```
 
-### Analyzing the Bundle Size
+You can further customize the appearance and functionality of the Gantt chart by modifying the properties of the `GanttChart` component.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Demo
 
-### Making a Progressive Web App
+![Demo.gif](./Gantt-Chart-Demo.gif)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Contributing
 
-### Advanced Configuration
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## License
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License.

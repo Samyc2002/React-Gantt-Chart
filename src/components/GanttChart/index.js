@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { addDays, differenceInDays } from "date-fns";
+import { addDays, differenceInDays, differenceInHours } from "date-fns";
 
 import styles from "./style.module.css";
 import ProjectCard from "../ProjectCard";
@@ -215,12 +215,19 @@ const GanttChart = ({ displayText, data, height, width: containerWidth }) => {
   const handleScrollX = (e) => {
     const { scrollLeft } = e.target;
     headerRef.current.scrollLeft = scrollLeft;
+    bodyRef.current.scrollTop = projectsRef.current.scrollTop;
   };
 
   // Synchronize the scroll position of the body of and gantt chart and the projects section.
   const handleScrollY = (e) => {
     const { scrollTop } = e.target;
     bodyRef.current.scrollTop = scrollTop;
+  };
+
+  const sortByMilestoneStart = (a, b) => {
+    const aStart = new Date(a?.milestones[0]?.startDate);
+    const bStart = new Date(b?.milestones[0]?.startDate);
+    return aStart > bStart ? 1 : -1;
   };
 
   return (
@@ -233,8 +240,8 @@ const GanttChart = ({ displayText, data, height, width: containerWidth }) => {
           onScroll={handleScrollY}
         >
           <h1 className={styles.projectsHeading}>Projects</h1>
-          {data?.map((project, id) => (
-            <ProjectCard project={project} key={id} />
+          {data?.sort(sortByMilestoneStart)?.map((project, id) => (
+            <ProjectCard project={project} key={id} expanded={tabValue !== 2} />
           ))}
         </div>
         <div className={styles.chartContainer}>
@@ -254,7 +261,14 @@ const GanttChart = ({ displayText, data, height, width: containerWidth }) => {
               })}
             </div>
           </div>
-          <div className={styles.parent} ref={bodyRef} onScroll={(e) => handleScrollX(e)}>
+          <div
+            className={styles.parent}
+            ref={bodyRef}
+            style={{
+              backgroundSize: `${dayWidth + 2}px 100%`
+            }}
+            onScroll={(e) => handleScrollX(e)}
+          >
             <div
               className={styles.ganttChart}
               ref={bodyRef}
@@ -266,54 +280,123 @@ const GanttChart = ({ displayText, data, height, width: containerWidth }) => {
                   width: days * (dayWidth + 2) + 2
                 }}
               >
-                {data.map((project, id) => (
-                  <div
-                    className={styles.ganttChartProject}
-                    style={{ backgroundSize: `${dayWidth + 2}px 100%` }}
-                    key={id}
-                  >
-                    {project?.milestones?.map((milestone) => (
-                      <div key={milestone.id} className={styles.ganttChartRow}>
-                        <div className={styles.ganttChartTaskRow}>
-                          <div
-                            className={styles.ganttChartTask}
-                            style={{
-                              marginLeft: `${
-                                startOffset +
-                                getDateOffset(milestone.startDate) *
+                {tabValue !== 2 &&
+                  data?.sort(sortByMilestoneStart)?.map((project, id) => (
+                    <div
+                      className={styles.ganttChartProject}
+                      style={{ backgroundSize: `${dayWidth + 2}px 100%` }}
+                      key={id}
+                    >
+                      {project?.milestones?.map((milestone) => (
+                        <div key={milestone.id} className={styles.ganttChartRow}>
+                          <div className={styles.ganttChartTaskRow}>
+                            <div
+                              className={styles.ganttChartTask}
+                              style={{
+                                marginLeft: `${
+                                  startOffset +
+                                  getDateOffset(milestone.startDate) *
+                                    (tabValue === 1
+                                      ? dayWidth / 7
+                                      : tabValue === 2
+                                      ? dayWidth / 30
+                                      : dayWidth) +
+                                  getDateOffset(milestone.startDate) * borderWidth * 2
+                                }px`,
+                                width: `${
+                                  milestone.duration *
                                   (tabValue === 1
-                                    ? dayWidth / 7
+                                    ? dayWidth / 7 + 2
                                     : tabValue === 2
-                                    ? dayWidth / 30
-                                    : dayWidth) +
-                                getDateOffset(milestone.startDate) * borderWidth * 2
-                              }px`,
-                              width: `${
+                                    ? dayWidth / 30 + 2
+                                    : dayWidth + 2)
+                                }px`,
+                                backgroundColor: milestone.primaryColor
+                              }}
+                            >
+                              {getDisplayText(
+                                milestone,
                                 milestone.duration *
-                                (tabValue === 1
-                                  ? dayWidth / 7 + 2
-                                  : tabValue === 2
-                                  ? dayWidth / 30 + 2
-                                  : dayWidth + 2)
-                              }px`,
-                              backgroundColor: milestone.primaryColor
-                            }}
-                          >
-                            {getDisplayText(
-                              milestone,
-                              milestone.duration *
-                                (tabValue === 1
-                                  ? dayWidth / 7 + 2
-                                  : tabValue === 2
-                                  ? dayWidth / 30 + 2
-                                  : dayWidth + 2)
-                            )}
+                                  (tabValue === 1
+                                    ? dayWidth / 7 + 2
+                                    : tabValue === 2
+                                    ? dayWidth / 30 + 2
+                                    : dayWidth + 2)
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                {tabValue === 2 &&
+                  data?.sort(sortByMilestoneStart)?.map((project, id) => {
+                    var dur = -1;
+
+                    project?.milestones?.forEach((element) => {
+                      dur = Math.max(
+                        dur,
+                        Math.abs(
+                          differenceInDays(
+                            new Date(project?.milestones[0]?.startDate),
+                            addDays(new Date(element?.startDate), element?.duration)
+                          )
+                        )
+                      );
+                    });
+
+                    const milestone = {
+                      name: project?.name,
+                      startDate: project?.milestones[0]?.startDate,
+                      duration: dur,
+                      primaryColor: project?.projectColor
+                    };
+                    return (
+                      <div className={styles.ganttChartProject} key={id}>
+                        <div
+                          className={styles.ganttChartRow}
+                          style={{ marginTop: "calc(-1*(24px + 1.17em))", marginBottom: "-14px" }}
+                        >
+                          <div className={styles.ganttChartTaskRow}>
+                            <div
+                              className={styles.ganttChartTask}
+                              style={{
+                                marginLeft: `${
+                                  startOffset +
+                                  getDateOffset(milestone.startDate) *
+                                    (tabValue === 1
+                                      ? dayWidth / 7
+                                      : tabValue === 2
+                                      ? dayWidth / 30
+                                      : dayWidth) +
+                                  getDateOffset(milestone.startDate) * borderWidth * 2
+                                }px`,
+                                width: `${
+                                  milestone.duration *
+                                  (tabValue === 1
+                                    ? dayWidth / 7 + 2
+                                    : tabValue === 2
+                                    ? dayWidth / 30 + 2
+                                    : dayWidth + 2)
+                                }px`,
+                                backgroundColor: milestone.primaryColor
+                              }}
+                            >
+                              {getDisplayText(
+                                milestone,
+                                milestone.duration *
+                                  (tabValue === 1
+                                    ? dayWidth / 7 + 2
+                                    : tabValue === 2
+                                    ? dayWidth / 30 + 2
+                                    : dayWidth + 2)
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                ))}
+                    );
+                  })}
               </div>
             </div>
           </div>

@@ -11,7 +11,7 @@
 
 /* Container for project cards */
 .projects {
-  width: 38%;
+  width: 40%;
   border: 1px solid #e0e0e0;
   border-radius: 10px 0 0 10px;
   display: flex;
@@ -43,6 +43,7 @@
   border-radius: 0 0 10px 0;
   border-left: 0;
   border-top: 0;
+  background-image: linear-gradient(to right, #e0e0e0 1px, transparent 1px);
 }
 
 /* Set styles for the Gantt chart container */
@@ -101,7 +102,6 @@
   flex-direction: column;
   padding-top: calc(44px + 1.17em);
   padding-bottom: 14px;
-  background-image: linear-gradient(to right, #e0e0e0 1px, transparent 1px);
 }
 
 /* Set styles for each row in the body of the Gantt chart */

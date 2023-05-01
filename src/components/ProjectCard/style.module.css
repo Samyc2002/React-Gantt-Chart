@@ -10,9 +10,28 @@
   justify-content: flex-start;
 }
 
+/* Styles for the project title container */
+.titleContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
 /* Styles for the project title */
 .title {
   margin: 5px 0;
+}
+
+.titleBtn {
+  margin: 0;
+  height: 22px;
+  padding: 3px 5px;
+  cursor: pointer;
+  background-color: rgba(256, 256, 256, 0.2);
+  border-radius: 5px;
+  border: 1px solid;
 }
 
 /* Styles for the milestone container */
